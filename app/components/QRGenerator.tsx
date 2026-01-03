@@ -235,23 +235,23 @@ export default function QRGenerator() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-lg mx-auto"
+      className="w-full max-w-lg mx-auto px-2 sm:px-0"
     >
-      <div className="glass-strong rounded-3xl p-8 gradient-border">
+      <div className="glass-strong rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 gradient-border">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-4 shadow-lg">
-            <QrCode className="w-7 h-7 text-white" />
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-secondary mb-3 sm:mb-4 shadow-lg">
+            <QrCode className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground mb-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
             Qraft
           </h1>
-          <p className="text-sm text-muted">
+          <p className="text-xs sm:text-sm text-muted px-2">
             Generate beautiful QR codes with custom patterns
           </p>
         </motion.div>
@@ -261,11 +261,11 @@ export default function QRGenerator() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mb-6"
+          className="mb-4 sm:mb-6"
         >
           <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted">
-              <Link className="w-5 h-5" />
+            <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-muted">
+              <Link className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <input
               type="text"
@@ -273,11 +273,11 @@ export default function QRGenerator() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Enter URL or text..."
-              className="w-full h-14 pl-12 pr-12 rounded-2xl bg-white/80 border border-border text-foreground placeholder:text-muted focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-sm"
+              className="w-full h-12 sm:h-14 pl-10 sm:pl-12 pr-10 sm:pr-12 rounded-xl sm:rounded-2xl bg-white/80 border border-border text-sm sm:text-base text-foreground placeholder:text-muted focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-sm"
             />
             <button
               onClick={handleCopy}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
               title="Copy to clipboard"
             >
               <AnimatePresence mode="wait">
@@ -300,16 +300,16 @@ export default function QRGenerator() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="flex flex-wrap items-center gap-3 mb-6"
+          className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-4 sm:mb-6"
         >
           {/* Size Selector */}
-          <div className="flex items-center gap-2 p-1 rounded-xl bg-white/80 border border-border shadow-sm">
-            <Maximize2 className="w-4 h-4 text-muted ml-2" />
+          <div className="flex items-center gap-1 sm:gap-2 p-1 rounded-lg sm:rounded-xl bg-white/80 border border-border shadow-sm">
+            <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted ml-1.5 sm:ml-2" />
             {(["sm", "md", "lg"] as QRSize[]).map((size) => (
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 ${
                   selectedSize === size
                     ? "bg-primary text-white shadow-md"
                     : "text-muted hover:text-foreground hover:bg-gray-100"
@@ -327,10 +327,10 @@ export default function QRGenerator() {
                 setShowPatternPicker(!showPatternPicker);
                 setShowColorPicker(false);
               }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/80 border border-border text-muted hover:text-foreground transition-all duration-300 shadow-sm"
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/80 border border-border text-muted hover:text-foreground transition-all duration-300 shadow-sm"
             >
-              <Grid3X3 className="w-4 h-4" />
-              <span className="text-sm font-medium capitalize hidden sm:inline">{selectedPattern}</span>
+              <Grid3X3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="text-xs sm:text-sm font-medium capitalize hidden sm:inline">{selectedPattern}</span>
             </button>
 
             <AnimatePresence>
@@ -339,7 +339,7 @@ export default function QRGenerator() {
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute top-full left-0 mt-2 p-3 rounded-2xl bg-white border border-border shadow-xl z-20 min-w-[180px]"
+                  className="absolute top-full left-0 sm:left-0 right-auto mt-2 p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white border border-border shadow-xl z-20 min-w-[150px] sm:min-w-[180px]"
                 >
                   <div className="flex flex-col gap-1">
                     {patternOptions.map((option) => {
@@ -351,14 +351,14 @@ export default function QRGenerator() {
                             setSelectedPattern(option.name);
                             setShowPatternPicker(false);
                           }}
-                          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 ${
+                          className={`flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl transition-all duration-300 ${
                             selectedPattern === option.name
                               ? "bg-primary/10 text-primary"
                               : "hover:bg-gray-100 text-foreground"
                           }`}
                         >
-                          <Icon className="w-4 h-4" />
-                          <span className="text-sm font-medium">{option.label}</span>
+                          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          <span className="text-xs sm:text-sm font-medium">{option.label}</span>
                         </button>
                       );
                     })}
@@ -375,11 +375,11 @@ export default function QRGenerator() {
                 setShowColorPicker(!showColorPicker);
                 setShowPatternPicker(false);
               }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/80 border border-border text-muted hover:text-foreground transition-all duration-300 shadow-sm"
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/80 border border-border text-muted hover:text-foreground transition-all duration-300 shadow-sm"
             >
-              <Palette className="w-4 h-4" />
+              <Palette className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span
-                className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 border-white shadow-sm"
                 style={{ backgroundColor: selectedColor.fg }}
               />
             </button>
@@ -390,9 +390,9 @@ export default function QRGenerator() {
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute top-full right-0 mt-2 p-4 rounded-2xl bg-white border border-border shadow-xl z-20 min-w-[200px]"
+                  className="absolute top-full right-0 mt-2 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-border shadow-xl z-20 min-w-[160px] sm:min-w-[200px]"
                 >
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
                     {colorPresets.map((color) => (
                       <button
                         key={color.name}
@@ -400,17 +400,17 @@ export default function QRGenerator() {
                           setSelectedColor(color);
                           setShowColorPicker(false);
                         }}
-                        className={`flex flex-col items-center gap-2 p-2.5 rounded-xl transition-all duration-300 ${
+                        className={`flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-2.5 rounded-lg sm:rounded-xl transition-all duration-300 ${
                           selectedColor.name === color.name
                             ? "bg-primary/10 ring-2 ring-primary/30"
                             : "hover:bg-gray-100"
                         }`}
                       >
                         <span
-                          className="w-8 h-8 rounded-lg border-2 border-white shadow-md"
+                          className="w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg border-2 border-white shadow-md"
                           style={{ backgroundColor: color.fg }}
                         />
-                        <span className="text-xs text-muted font-medium whitespace-nowrap">{color.name}</span>
+                        <span className="text-[10px] sm:text-xs text-muted font-medium whitespace-nowrap">{color.name}</span>
                       </button>
                     ))}
                   </div>
@@ -429,9 +429,9 @@ export default function QRGenerator() {
           whileTap={{ scale: 0.98 }}
           onClick={handleGenerate}
           disabled={!inputValue.trim()}
-          className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-primary-hover text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 glow-primary shadow-lg"
+          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-primary-hover text-white text-sm sm:text-base font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 glow-primary shadow-lg"
         >
-          <Sparkles className="w-5 h-5" />
+          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
           Generate QR Code
         </motion.button>
 
@@ -443,7 +443,7 @@ export default function QRGenerator() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-8"
+              className="mt-6 sm:mt-8"
             >
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -454,7 +454,7 @@ export default function QRGenerator() {
                 {/* QR Code */}
                 <div
                   ref={qrRef}
-                  className="p-6 rounded-2xl bg-white shadow-2xl animate-float"
+                  className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white shadow-2xl animate-float"
                 >
                   <img
                     src={qrImageUrl}
@@ -473,14 +473,14 @@ export default function QRGenerator() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleDownload}
-                  className="mt-6 flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-border text-foreground hover:bg-gray-50 transition-all duration-300 shadow-md"
+                  className="mt-4 sm:mt-6 flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-white border border-border text-sm sm:text-base text-foreground hover:bg-gray-50 transition-all duration-300 shadow-md"
                 >
-                  <Download className="w-5 h-5" />
+                  <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                   Download PNG
                 </motion.button>
 
                 {/* URL Preview */}
-                <p className="mt-4 text-sm text-muted max-w-xs text-center truncate">
+                <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-muted max-w-[200px] sm:max-w-xs text-center truncate px-2">
                   {qrValue}
                 </p>
               </motion.div>
@@ -492,28 +492,28 @@ export default function QRGenerator() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="mt-8 pt-6 border-t border-border/50"
+          className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border/50"
         >
-          <div className="flex items-center justify-center gap-4">
-            <span className="text-sm text-muted">Built by Ashutosh Swamy</span>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+            <span className="text-xs sm:text-sm text-muted">Built by Ashutosh Swamy</span>
             <div className="flex items-center gap-2">
               <a
                 href="https://github.com/ashutoshswamy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg hover:bg-gray-100 text-muted hover:text-foreground transition-all duration-300"
+                className="p-1.5 sm:p-2 rounded-md sm:rounded-lg hover:bg-gray-100 text-muted hover:text-foreground transition-all duration-300"
                 title="GitHub"
               >
-                <Github className="w-5 h-5" />
+                <Github className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
               <a
                 href="https://linkedin.com/in/ashutoshswamy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg hover:bg-gray-100 text-muted hover:text-foreground transition-all duration-300"
+                className="p-1.5 sm:p-2 rounded-md sm:rounded-lg hover:bg-gray-100 text-muted hover:text-foreground transition-all duration-300"
                 title="LinkedIn"
               >
-                <Linkedin className="w-5 h-5" />
+                <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
             </div>
           </div>
