@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useCallback, useMemo } from "react";
+import QRCode from "@cheprasov/qrcode";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   Link,
   Download,
+  ArrowRight,
   Sparkles,
   Copy,
   Check,
@@ -15,9 +17,9 @@ import {
   Circle,
   Square,
   Hexagon,
-  Github,
-  Linkedin,
+  Globe,
 } from "lucide-react";
+import { GithubLogo, LinkedinLogo, XLogo } from "./BrandIcons";
 
 type QRSize = "sm" | "md" | "lg";
 type QRPattern = "squares" | "dots" | "rounded" | "classy" | "elegant";
@@ -53,7 +55,6 @@ function generateQRWithPattern(
   fgColor: string,
   bgColor: string
 ): string {
-  const QRCode = require("@cheprasov/qrcode");
   const qr = new QRCode.QRCodeRaw(text, { level: "H" });
   const modules = qr.getData();
   
@@ -173,7 +174,6 @@ function drawConnectedModule(ctx: CanvasRenderingContext2D, x: number, y: number
 export default function QRGenerator() {
   const [inputValue, setInputValue] = useState("");
   const [qrValue, setQrValue] = useState("");
-  const [qrImageUrl, setQrImageUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [selectedSize, setSelectedSize] = useState<QRSize>("md");
   const [selectedColor, setSelectedColor] = useState(colorPresets[0]);
@@ -181,25 +181,18 @@ export default function QRGenerator() {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showPatternPicker, setShowPatternPicker] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
 
-  const generateQR = useCallback(() => {
-    if (!qrValue) return;
-    
-    const url = generateQRWithPattern(
+  const qrImageUrl = useMemo(() => {
+    if (!qrValue) return "";
+    return generateQRWithPattern(
       qrValue,
       sizeMap[selectedSize] * 2,
       selectedPattern,
       selectedColor.fg,
       selectedColor.bg
     );
-    setQrImageUrl(url);
   }, [qrValue, selectedSize, selectedPattern, selectedColor]);
-
-  useEffect(() => {
-    if (qrValue) {
-      generateQR();
-    }
-  }, [qrValue, selectedSize, selectedPattern, selectedColor, generateQR]);
 
   const handleGenerate = useCallback(() => {
     if (inputValue.trim()) {
@@ -232,58 +225,70 @@ export default function QRGenerator() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-lg mx-auto px-2 sm:px-0"
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="w-full max-w-xl mx-auto px-2 sm:px-0"
     >
-      <div className="glass-strong rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 gradient-border">
-        {/* Header */}
+      <div className="bg-panel border border-line rounded-[20px] p-5 sm:p-8 md:p-10 shadow-[0_1px_2px_rgba(23,22,15,0.04),0_16px_40px_rgba(23,22,15,0.06)]">
+        {/* Masthead */}
+        <div className="flex items-center mb-8 sm:mb-10 pb-5 border-b border-line">
+          <div className="flex items-center gap-2.5">
+            <QrCode className="w-5 h-5 sm:w-6 sm:h-6 text-ink" aria-hidden />
+            <span className="font-sans font-extrabold text-base sm:text-lg tracking-tight">
+              QRAFT
+            </span>
+          </div>
+        </div>
+
+        {/* Hero */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-center mb-6 sm:mb-8"
+          transition={{ delay: 0.1 }}
+          className="mb-8 sm:mb-10"
         >
-          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-secondary mb-3 sm:mb-4 shadow-lg">
-            <QrCode className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
-            Qraft
+          <h1 className="font-sans font-extrabold text-[1.75rem] sm:text-4xl leading-[1.08] tracking-tight mb-2">
+            Encode anything into
+            <br />a scannable mark.
           </h1>
-          <p className="text-xs sm:text-sm text-muted px-2">
-            Generate beautiful QR codes with custom patterns
+          <p className="text-ink-soft text-sm sm:text-base">
+            Paste a link or text, choose a shape, generate.
           </p>
         </motion.div>
 
-        {/* Input Section */}
+        {/* Source input */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mb-4 sm:mb-6"
+          transition={{ delay: 0.15 }}
+          className="mb-5 sm:mb-6"
         >
+          <label htmlFor="qr-source" className="label block mb-2">
+            Source
+          </label>
           <div className="relative">
-            <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-muted">
+            <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-ink-soft">
               <Link className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <input
+              id="qr-source"
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Enter URL or text..."
-              className="w-full h-12 sm:h-14 pl-10 sm:pl-12 pr-10 sm:pr-12 rounded-xl sm:rounded-2xl bg-white/80 border border-border text-sm sm:text-base text-foreground placeholder:text-muted focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-sm"
+              placeholder="ashutoshswamy.in"
+              className="w-full h-12 sm:h-14 pl-10 sm:pl-12 pr-10 sm:pr-12 rounded-lg bg-paper border border-line font-mono lowercase tracking-widest text-xs sm:text-sm text-ink placeholder:text-ink-soft focus:border-ink/40 focus:ring-4 focus:ring-ink/[0.04] transition-all duration-200"
             />
             <button
               onClick={handleCopy}
-              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-ink-soft hover:text-ink transition-colors"
               title="Copy to clipboard"
             >
               <AnimatePresence mode="wait">
                 {copied ? (
                   <motion.div key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
-                    <Check className="w-5 h-5 text-emerald-500" />
+                    <Check className="w-5 h-5 text-signal" />
                   </motion.div>
                 ) : (
                   <motion.div key="copy" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
@@ -295,53 +300,62 @@ export default function QRGenerator() {
           </div>
         </motion.div>
 
-        {/* Options Row */}
+        {/* Field table: size / pattern / color */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-4 sm:mb-6"
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-1 sm:grid-cols-3 border border-line rounded-lg overflow-visible mb-6 sm:mb-8 divide-y sm:divide-y-0 sm:divide-x divide-line"
         >
-          {/* Size Selector */}
-          <div className="flex items-center gap-1 sm:gap-2 p-1 rounded-lg sm:rounded-xl bg-white/80 border border-border shadow-sm">
-            <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted ml-1.5 sm:ml-2" />
-            {(["sm", "md", "lg"] as QRSize[]).map((size) => (
-              <button
-                key={size}
-                onClick={() => setSelectedSize(size)}
-                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 ${
-                  selectedSize === size
-                    ? "bg-primary text-white shadow-md"
-                    : "text-muted hover:text-foreground hover:bg-gray-100"
-                }`}
-              >
-                {size.toUpperCase()}
-              </button>
-            ))}
+          {/* Size */}
+          <div className="p-3 sm:p-3.5">
+            <span className="label flex items-center gap-1.5 mb-2.5">
+              <Maximize2 className="w-3 h-3" />
+              Size
+            </span>
+            <div className="flex gap-1">
+              {(["sm", "md", "lg"] as QRSize[]).map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`px-2.5 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors duration-200 ${
+                    selectedSize === size
+                      ? "bg-ink text-paper"
+                      : "text-ink-soft hover:text-ink hover:bg-paper"
+                  }`}
+                >
+                  {size.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Pattern Selector */}
-          <div className="relative">
+          {/* Pattern */}
+          <div className="p-3 sm:p-3.5 relative">
+            <span className="label flex items-center gap-1.5 mb-2.5">
+              <Grid3X3 className="w-3 h-3" />
+              Pattern
+            </span>
             <button
               onClick={() => {
                 setShowPatternPicker(!showPatternPicker);
                 setShowColorPicker(false);
               }}
-              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/80 border border-border text-muted hover:text-foreground transition-all duration-300 shadow-sm"
+              className="flex items-center justify-between w-full gap-2 px-2.5 py-1.5 rounded-md text-xs sm:text-sm font-medium text-ink hover:bg-paper transition-colors duration-200 capitalize"
             >
-              <Grid3X3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span className="text-xs sm:text-sm font-medium capitalize hidden sm:inline">{selectedPattern}</span>
+              {selectedPattern}
             </button>
 
             <AnimatePresence>
               {showPatternPicker && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute top-full left-0 sm:left-0 right-auto mt-2 p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white border border-border shadow-xl z-20 min-w-[150px] sm:min-w-[180px]"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full left-3 right-3 sm:left-0 sm:right-0 mt-1 p-1.5 rounded-lg bg-panel border border-line shadow-lg z-20"
                 >
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-0.5">
                     {patternOptions.map((option) => {
                       const Icon = option.icon;
                       return (
@@ -351,13 +365,13 @@ export default function QRGenerator() {
                             setSelectedPattern(option.name);
                             setShowPatternPicker(false);
                           }}
-                          className={`flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl transition-all duration-300 ${
+                          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-colors duration-200 ${
                             selectedPattern === option.name
-                              ? "bg-primary/10 text-primary"
-                              : "hover:bg-gray-100 text-foreground"
+                              ? "bg-laser-soft text-laser"
+                              : "hover:bg-paper text-ink"
                           }`}
                         >
-                          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          <Icon className="w-3.5 h-3.5" />
                           <span className="text-xs sm:text-sm font-medium">{option.label}</span>
                         </button>
                       );
@@ -368,31 +382,36 @@ export default function QRGenerator() {
             </AnimatePresence>
           </div>
 
-          {/* Color Selector */}
-          <div className="relative">
+          {/* Color */}
+          <div className="p-3 sm:p-3.5 relative">
+            <span className="label flex items-center gap-1.5 mb-2.5">
+              <Palette className="w-3 h-3" />
+              Color
+            </span>
             <button
               onClick={() => {
                 setShowColorPicker(!showColorPicker);
                 setShowPatternPicker(false);
               }}
-              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/80 border border-border text-muted hover:text-foreground transition-all duration-300 shadow-sm"
+              className="flex items-center gap-2 w-full px-2.5 py-1.5 rounded-md text-xs sm:text-sm font-medium text-ink hover:bg-paper transition-colors duration-200"
             >
-              <Palette className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span
-                className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 border-white shadow-sm"
+                className="w-3.5 h-3.5 rounded-full border border-line"
                 style={{ backgroundColor: selectedColor.fg }}
               />
+              {selectedColor.name}
             </button>
 
             <AnimatePresence>
               {showColorPicker && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute top-full right-0 mt-2 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-border shadow-xl z-20 min-w-[160px] sm:min-w-[200px]"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full left-3 right-3 sm:left-auto sm:right-0 mt-1 p-3 rounded-lg bg-panel border border-line shadow-lg z-20 sm:min-w-[190px]"
                 >
-                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-3 gap-2">
                     {colorPresets.map((color) => (
                       <button
                         key={color.name}
@@ -400,17 +419,19 @@ export default function QRGenerator() {
                           setSelectedColor(color);
                           setShowColorPicker(false);
                         }}
-                        className={`flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-2.5 rounded-lg sm:rounded-xl transition-all duration-300 ${
+                        className={`flex flex-col items-center gap-1.5 p-2 rounded-md transition-colors duration-200 ${
                           selectedColor.name === color.name
-                            ? "bg-primary/10 ring-2 ring-primary/30"
-                            : "hover:bg-gray-100"
+                            ? "bg-laser-soft ring-1 ring-laser/40"
+                            : "hover:bg-paper"
                         }`}
                       >
                         <span
-                          className="w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg border-2 border-white shadow-md"
+                          className="w-6 h-6 rounded-full border border-line"
                           style={{ backgroundColor: color.fg }}
                         />
-                        <span className="text-[10px] sm:text-xs text-muted font-medium whitespace-nowrap">{color.name}</span>
+                        <span className="text-[10px] text-ink-soft font-medium whitespace-nowrap">
+                          {color.name}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -420,104 +441,115 @@ export default function QRGenerator() {
           </div>
         </motion.div>
 
-        {/* Generate Button */}
+        {/* Generate */}
         <motion.button
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          transition={{ delay: 0.25 }}
+          whileHover={{ y: -1 }}
+          whileTap={{ scale: 0.98, y: 0 }}
           onClick={handleGenerate}
           disabled={!inputValue.trim()}
-          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-primary-hover text-white text-sm sm:text-base font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 glow-primary shadow-lg"
+          className="w-full h-12 sm:h-14 rounded-lg bg-ink text-paper text-sm sm:text-base font-medium flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color,box-shadow] duration-200 hover:bg-ink/90 shadow-[0_1px_2px_rgba(23,22,15,0.08),0_8px_20px_rgba(23,22,15,0.14)]"
         >
-          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-          Generate QR Code
+          Generate QR code
+          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </motion.button>
 
-        {/* QR Code Display */}
+        {/* Result */}
         <AnimatePresence>
           {qrImageUrl && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-6 sm:mt-8"
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-8 sm:mt-10 pt-8 sm:pt-10 border-t border-line"
             >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                className="flex flex-col items-center"
-              >
-                {/* QR Code */}
-                <div
-                  ref={qrRef}
-                  className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white shadow-2xl animate-float"
-                >
-                  <img
-                    src={qrImageUrl}
-                    alt="QR Code"
-                    width={sizeMap[selectedSize]}
-                    height={sizeMap[selectedSize]}
-                    className="block"
-                  />
+              <div className="flex flex-col items-center">
+                <div className="viewfinder p-5 sm:p-6 bg-paper border border-line rounded-lg shadow-[0_1px_2px_rgba(23,22,15,0.04),0_12px_28px_rgba(23,22,15,0.05)]">
+                  <span className="vf-tr" />
+                  <span className="vf-bl" />
+                  <div ref={qrRef} className="relative overflow-hidden rounded-sm">
+                    {/* client-generated data: URI — next/image optimization doesn't apply here */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={qrImageUrl}
+                      alt="Generated QR code"
+                      width={sizeMap[selectedSize]}
+                      height={sizeMap[selectedSize]}
+                      className="block"
+                    />
+                    {!reduceMotion && (
+                      <motion.div
+                        key={qrImageUrl}
+                        initial={{ top: "-4%" }}
+                        animate={{ top: "104%" }}
+                        transition={{ duration: 0.7, ease: "easeInOut" }}
+                        className="absolute left-0 right-0 h-[3px] bg-laser shadow-[0_0_10px_var(--laser)] pointer-events-none"
+                      />
+                    )}
+                  </div>
                 </div>
 
-                {/* Download Button */}
-                <motion.button
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <button
                   onClick={handleDownload}
-                  className="mt-4 sm:mt-6 flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-white border border-border text-sm sm:text-base text-foreground hover:bg-gray-50 transition-all duration-300 shadow-md"
+                  className="mt-5 sm:mt-6 flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg border border-line text-sm sm:text-base text-ink hover:bg-paper transition-colors duration-200"
                 >
                   <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                   Download PNG
-                </motion.button>
+                </button>
 
-                {/* URL Preview */}
-                <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-muted max-w-[200px] sm:max-w-xs text-center truncate px-2">
+                <p className="font-mono lowercase tracking-widest text-[0.6875rem] text-ink-soft mt-4 max-w-[220px] sm:max-w-xs text-center truncate">
                   {qrValue}
                 </p>
-              </motion.div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-        {/* Developer Info */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border/50"
-        >
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-            <span className="text-xs sm:text-sm text-muted">Built by Ashutosh Swamy</span>
-            <div className="flex items-center gap-2">
-              <a
-                href="https://github.com/ashutoshswamy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-1.5 sm:p-2 rounded-md sm:rounded-lg hover:bg-gray-100 text-muted hover:text-foreground transition-all duration-300"
-                title="GitHub"
-              >
-                <Github className="w-4 h-4 sm:w-5 sm:h-5" />
-              </a>
-              <a
-                href="https://linkedin.com/in/ashutoshswamy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-1.5 sm:p-2 rounded-md sm:rounded-lg hover:bg-gray-100 text-muted hover:text-foreground transition-all duration-300"
-                title="LinkedIn"
-              >
-                <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
-              </a>
-            </div>
+
+        {/* Colophon */}
+        <div className="mt-8 sm:mt-10 pt-5 border-t border-line flex items-center justify-between">
+          <span className="label">Built by Ashutosh Swamy</span>
+          <div className="flex items-center gap-1">
+            <a
+              href="https://github.com/ashutoshswamy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1.5 sm:p-2 rounded-md text-ink-soft hover:text-ink hover:bg-paper transition-colors duration-200"
+              title="GitHub"
+            >
+              <GithubLogo className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+            </a>
+            <a
+              href="https://linkedin.com/in/ashutoshswamy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1.5 sm:p-2 rounded-md text-ink-soft hover:text-ink hover:bg-paper transition-colors duration-200"
+              title="LinkedIn"
+            >
+              <LinkedinLogo className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+            </a>
+            <a
+              href="https://x.com/ashutoshswamy_"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1.5 sm:p-2 rounded-md text-ink-soft hover:text-ink hover:bg-paper transition-colors duration-200"
+              title="X"
+            >
+              <XLogo className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+            </a>
+            <a
+              href="https://ashutoshswamy.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1.5 sm:p-2 rounded-md text-ink-soft hover:text-ink hover:bg-paper transition-colors duration-200"
+              title="Portfolio"
+            >
+              <Globe className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+            </a>
           </div>
-        </motion.div>
+        </div>
       </div>
     </motion.div>
   );

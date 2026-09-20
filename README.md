@@ -8,12 +8,12 @@
 <h1 align="center">✨ Qraft</h1>
 
 <p align="center">
-  <strong>A minimal, professional QR code generator with custom patterns and colors.</strong>
+  <strong>Encode anything into a scannable mark — a free, custom QR code generator.</strong>
 </p>
 
 <p align="center">
+  <a href="https://qraft.ashutoshswamy.in">Live</a> •
   <a href="#features">Features</a> •
-  <a href="#demo">Demo</a> •
   <a href="#installation">Installation</a> •
   <a href="#tech-stack">Tech Stack</a> •
   <a href="#license">License</a>
@@ -30,11 +30,13 @@
 | 📐 **3 Size Options** | Small (150px), Medium (200px), Large (280px) |
 | 📥 **PNG Download** | High-quality 2x resolution export |
 | ⚡ **Real-time Preview** | Instant QR code generation as you type |
-| 🎭 **Smooth Animations** | Beautiful micro-interactions with Framer Motion |
+| 🎭 **Smooth Animations** | Scan-line reveal and micro-interactions with Framer Motion |
+| 🔍 **SEO Ready** | Structured data, sitemap, robots.txt, Open Graph & Twitter cards |
+| 🔒 **Hardened Headers** | CSP, HSTS, X-Frame-Options, and more via `next.config.ts` |
 
 ## 🚀 Demo
 
-Try it locally:
+Try it live at **[qraft.ashutoshswamy.in](https://qraft.ashutoshswamy.in)**, or run it locally:
 
 ```bash
 git clone https://github.com/ashutoshswamy/qraft.git
@@ -80,12 +82,12 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 | Technology | Purpose |
 |------------|---------|
-| [Next.js 16](https://nextjs.org/) | React Framework |
+| [Next.js 16](https://nextjs.org/) | React Framework (App Router) |
 | [React 19](https://react.dev/) | UI Library |
 | [Tailwind CSS 4](https://tailwindcss.com/) | Styling |
 | [Framer Motion](https://www.framer.com/motion/) | Animations |
 | [Lucide React](https://lucide.dev/) | Icons |
-| [Poppins](https://fonts.google.com/specimen/Poppins) | Typography |
+| [DM Sans / DM Mono](https://fonts.google.com/specimen/DM+Sans) | Typography |
 
 ## 📁 Project Structure
 
@@ -93,12 +95,18 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 qraft/
 ├── app/
 │   ├── components/
-│   │   ├── Background.tsx    # Animated gradient background
-│   │   └── QRGenerator.tsx   # Main QR generator component
-│   ├── globals.css           # Global styles & design tokens
-│   ├── layout.tsx            # Root layout with Poppins font
-│   └── page.tsx              # Home page
-├── public/                   # Static assets
+│   │   ├── Background.tsx    # Module-grid + finder-mark watermark
+│   │   ├── QRGenerator.tsx   # Main QR generator
+│   │   └── BrandIcons.tsx    # Inline brand-mark SVGs (GitHub, LinkedIn, X)
+│   ├── types/
+│   │   └── cheprasov-qrcode.d.ts
+│   ├── globals.css           # Design tokens (paper/ink/laser/signal)
+│   ├── layout.tsx            # Root layout, fonts, SEO metadata, JSON-LD
+│   ├── page.tsx               # Home page
+│   ├── robots.ts              # robots.txt
+│   └── sitemap.ts             # sitemap.xml
+├── public/                   # Static assets (icons, og-image.png)
+├── next.config.ts            # Security headers (CSP, HSTS, ...)
 └── package.json
 ```
 
@@ -106,8 +114,10 @@ qraft/
 
 **Ashutosh Swamy**
 
+- Portfolio: [ashutoshswamy.in](https://ashutoshswamy.in)
 - GitHub: [@ashutoshswamy](https://github.com/ashutoshswamy)
 - LinkedIn: [@ashutoshswamy](https://linkedin.com/in/ashutoshswamy)
+- X: [@ashutoshswamy_](https://x.com/ashutoshswamy_)
 
 ## 📄 License
 

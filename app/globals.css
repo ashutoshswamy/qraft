@@ -1,31 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --secondary: #0ea5e9;
-  --accent: #ec4899;
-  --surface: rgba(255, 255, 255, 0.8);
-  --surface-hover: rgba(255, 255, 255, 0.95);
-  --border: rgba(0, 0, 0, 0.08);
-  --muted: rgba(0, 0, 0, 0.5);
-  --card-bg: rgba(255, 255, 255, 0.7);
+  --paper: #f2f1ec;
+  --panel: #ffffff;
+  --ink: #17160f;
+  --ink-soft: #6b6a61;
+  --line: #dedbd0;
+  --laser: #ff4433;
+  --laser-soft: rgba(255, 68, 51, 0.12);
+  --signal: #1c7a54;
+  --signal-soft: rgba(28, 122, 84, 0.12);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-secondary: var(--secondary);
-  --color-accent: var(--accent);
-  --color-surface: var(--surface);
-  --color-surface-hover: var(--surface-hover);
-  --color-border: var(--border);
-  --color-muted: var(--muted);
-  --font-sans: var(--font-poppins);
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-laser: var(--laser);
+  --color-laser-soft: var(--laser-soft);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-dm-mono);
 }
 
 * {
@@ -37,117 +35,115 @@ html {
 }
 
 body {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
-  color: var(--foreground);
-  font-family: var(--font-poppins), system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Glassmorphism utilities - Light theme */
-.glass {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+/* Utility caption / label style: tracked uppercase mono, the spec-sheet voice */
+.label {
+  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
 }
 
-.glass-strong {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+/* Concentric finder-pattern mark (the QR corner alignment square) */
+.finder-mark {
+  position: relative;
+  display: inline-block;
+  border: 2px solid currentColor;
 }
 
-/* Gradient borders */
-.gradient-border {
+.finder-mark::after {
+  content: "";
+  position: absolute;
+  inset: 28%;
+  background: currentColor;
+}
+
+/* Viewfinder corner brackets around the QR preview */
+.viewfinder {
   position: relative;
 }
 
-.gradient-border::before {
-  content: '';
+.viewfinder::before,
+.viewfinder::after,
+.viewfinder .vf-tr,
+.viewfinder .vf-bl {
+  content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.5px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  width: 22px;
+  height: 22px;
+  border-color: var(--laser);
   pointer-events: none;
-  opacity: 0.6;
 }
 
-/* Glow effects */
-.glow-primary {
-  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35);
+.viewfinder::before {
+  top: -10px;
+  left: -10px;
+  border-top: 3px solid var(--laser);
+  border-left: 3px solid var(--laser);
 }
 
-.glow-secondary {
-  box-shadow: 0 8px 30px rgba(14, 165, 233, 0.35);
+.viewfinder::after {
+  bottom: -10px;
+  right: -10px;
+  border-bottom: 3px solid var(--laser);
+  border-right: 3px solid var(--laser);
 }
 
-/* QR Code container styling */
-.qr-container {
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+.viewfinder .vf-tr {
+  top: -10px;
+  right: -10px;
+  border-top: 3px solid var(--laser);
+  border-right: 3px solid var(--laser);
 }
 
-/* Subtle animations */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+.viewfinder .vf-bl {
+  bottom: -10px;
+  left: -10px;
+  border-bottom: 3px solid var(--laser);
+  border-left: 3px solid var(--laser);
 }
 
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.3);
-  }
-  50% {
-    box-shadow: 0 12px 45px rgba(99, 102, 241, 0.5);
-  }
+/* Hairline dividers */
+.rule {
+  border-color: var(--line);
 }
 
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+/* Module grid watermark used in the background */
+.module-grid {
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-shift 8s ease infinite;
-}
-
-/* Input styling for light theme */
 input::placeholder {
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--ink-soft);
+  opacity: 0.7;
 }
 
 input:focus {
   outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--laser);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
