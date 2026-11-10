@@ -1,18 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, DM_Mono } from "next/font/google";
+import { DM_Sans, Bricolage_Grotesque } from "next/font/google";
+import AppToaster from "./components/AppToaster";
 import "./globals.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "700", "800", "900"],
+  display: "swap",
 });
 
-const dmMono = DM_Mono({
-  variable: "--font-dm-mono",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  display: "swap",
 });
+
+// Set the theme before first paint so there is no flash.
+const themeScript = `try{var t=localStorage.getItem("qraft-theme");var d=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.theme=d?"dark":"light";document.documentElement.style.colorScheme=d?"dark":"light"}catch(e){}`;
 
 const siteUrl = "https://qraft.ashutoshswamy.in";
 const title = "Qraft | Free QR Code Generator";
@@ -59,17 +63,18 @@ export const metadata: Metadata = {
     title,
     description,
     locale: "en_US",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: title }],
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: title }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
     creator: "@ashutoshswamy_",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"],
   },
   icons: {
     icon: [
+      { url: "/logo.svg", type: "image/svg+xml" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
     ],
@@ -82,7 +87,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f2f1ec",
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#3b4cf0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f0d2e" },
+  ],
 };
 
 const structuredData = {
@@ -93,6 +102,15 @@ const structuredData = {
   description,
   applicationCategory: "UtilitiesApplication",
   operatingSystem: "Any",
+  browserRequirements: "Requires JavaScript",
+  image: `${siteUrl}/og-image.jpg`,
+  featureList: [
+    "Custom QR code patterns: square, dots, rounded, classy, elegant",
+    "Choose ink color and size",
+    "Download as PNG",
+    "Runs in the browser, nothing uploaded",
+    "No sign-up",
+  ],
   offers: {
     "@type": "Offer",
     price: "0",
@@ -111,13 +129,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${dmSans.variable} ${dmMono.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className={`${dmSans.variable} ${bricolage.variable} antialiased`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
         {children}
+        <AppToaster />
       </body>
     </html>
   );

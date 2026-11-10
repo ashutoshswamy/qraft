@@ -1,6 +1,6 @@
 # Qraft
 
-![Qraft cover](public/og-image.png)
+![Qraft cover](public/og-image.jpg)
 
 Encode anything into a scannable mark — a free, custom QR code generator built with Next.js.
 

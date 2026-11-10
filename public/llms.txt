@@ -1,0 +1,7 @@
+# Qraft
+
+> Free, client-side QR code generator. Paste a link or text, pick a pattern (square, dots, rounded, classy, elegant), ink color and size, then download a PNG. No sign-up; nothing is uploaded.
+
+- [Qraft QR code generator](https://qraft.ashutoshswamy.in): the generator and FAQ
+
+Built by Ashutosh Swamy (https://ashutoshswamy.in).

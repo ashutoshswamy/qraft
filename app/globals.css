@@ -1,29 +1,54 @@
 @import "tailwindcss";
+@import "sileo/styles.css";
 
+/* Riso print-shop palette: two inks (cobalt, coral) on paper. */
 :root {
-  --paper: #f2f1ec;
-  --panel: #ffffff;
-  --ink: #17160f;
-  --ink-soft: #6b6a61;
-  --line: #dedbd0;
-  --laser: #ff4433;
-  --laser-soft: rgba(255, 68, 51, 0.12);
-  --signal: #1c7a54;
-  --signal-soft: rgba(28, 122, 84, 0.12);
+  --ground: #3b4cf0;
+  --on-ground: #ffffff;
+  --on-ground-soft: rgba(255, 255, 255, 0.86);
+  --paper: #f7f6fd;
+  --ink: #15123a;
+  --ink-soft: #4d4a78;
+  --line: #d9d6ef;
+  --coral: #ff5c47;
+  --accent: #3b4cf0;
+  --accent-text: #ffffff;
+  --focus: #15123a;
+  --halftone-coral: #ff5c47;
+  --halftone-light: rgba(255, 255, 255, 0.28);
+  --grain-opacity: 0.16;
+}
+
+:root[data-theme="dark"] {
+  --ground: #0f0d2e;
+  --on-ground: #f1f0ff;
+  --on-ground-soft: #c9c7ee;
+  --paper: #1b1847;
+  --ink: #f1f0ff;
+  --ink-soft: #b4b1e0;
+  --line: #3a3580;
+  --coral: #ff6b57;
+  --accent: #4658f5;
+  --accent-text: #ffffff;
+  --focus: #f1f0ff;
+  --halftone-coral: #ff6b57;
+  --halftone-light: rgba(90, 105, 255, 0.4);
+  --grain-opacity: 0.1;
 }
 
 @theme inline {
+  --color-ground: var(--ground);
+  --color-on-ground: var(--on-ground);
+  --color-on-ground-soft: var(--on-ground-soft);
   --color-paper: var(--paper);
-  --color-panel: var(--panel);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-line: var(--line);
-  --color-laser: var(--laser);
-  --color-laser-soft: var(--laser-soft);
-  --color-signal: var(--signal);
-  --color-signal-soft: var(--signal-soft);
-  --font-sans: var(--font-dm-sans);
-  --font-mono: var(--font-dm-mono);
+  --color-coral: var(--coral);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-dm-sans), system-ui, sans-serif;
 }
 
 * {
@@ -32,109 +57,156 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--ground);
 }
 
 body {
-  background: var(--paper);
+  background: var(--ground);
   color: var(--ink);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
+  /* notches and rounded corners in landscape */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
 }
 
-/* Utility caption / label style: tracked uppercase mono, the spec-sheet voice */
-.label {
-  font-family: var(--font-dm-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
+::selection {
+  background: var(--coral);
+  color: #15123a;
 }
 
-/* Concentric finder-pattern mark (the QR corner alignment square) */
-.finder-mark {
-  position: relative;
-  display: inline-block;
-  border: 2px solid currentColor;
+/* Header and footer sit directly on the ground ink, so focus flips to light there */
+.ground-zone {
+  --focus: var(--on-ground);
 }
 
-.finder-mark::after {
-  content: "";
-  position: absolute;
-  inset: 28%;
-  background: currentColor;
+.paper-zone {
+  --focus: var(--ink);
 }
 
-/* Viewfinder corner brackets around the QR preview */
-.viewfinder {
-  position: relative;
+/* FAQ accordion: native <details>, height eases open where the browser supports it */
+:root {
+  interpolate-size: allow-keywords;
 }
 
-.viewfinder::before,
-.viewfinder::after,
-.viewfinder .vf-tr,
-.viewfinder .vf-bl {
-  content: "";
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border-color: var(--laser);
-  pointer-events: none;
+.faq-item::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    content-visibility 0.35s allow-discrete;
 }
 
-.viewfinder::before {
-  top: -10px;
-  left: -10px;
-  border-top: 3px solid var(--laser);
-  border-left: 3px solid var(--laser);
+.faq-item[open]::details-content {
+  block-size: auto;
 }
 
-.viewfinder::after {
-  bottom: -10px;
-  right: -10px;
-  border-bottom: 3px solid var(--laser);
-  border-right: 3px solid var(--laser);
-}
-
-.viewfinder .vf-tr {
-  top: -10px;
-  right: -10px;
-  border-top: 3px solid var(--laser);
-  border-right: 3px solid var(--laser);
-}
-
-.viewfinder .vf-bl {
-  bottom: -10px;
-  left: -10px;
-  border-bottom: 3px solid var(--laser);
-  border-left: 3px solid var(--laser);
-}
-
-/* Hairline dividers */
-.rule {
-  border-color: var(--line);
-}
-
-/* Module grid watermark used in the background */
-.module-grid {
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-
-input::placeholder {
-  color: var(--ink-soft);
-  opacity: 0.7;
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 input:focus {
   outline: none;
 }
 
-:focus-visible {
-  outline: 2px solid var(--laser);
-  outline-offset: 2px;
+input:focus-visible {
+  outline: none;
+}
+
+input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.75;
+}
+
+/* Form field label: plain, sentence case, set in the body face */
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Misregistered second ink on the headline's key words */
+.overprint {
+  text-shadow: 0.035em 0.03em 0 var(--coral);
+}
+
+/* Halftone dot fields */
+.halftone {
+  background-size: 15px 15px;
+  -webkit-mask-image: radial-gradient(closest-side, #000 25%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 25%, transparent 100%);
+}
+
+.halftone-coral {
+  background-image: radial-gradient(circle, var(--halftone-coral) 3px, transparent 3.6px);
+}
+
+.halftone-light {
+  background-image: radial-gradient(circle, var(--halftone-light) 3px, transparent 3.6px);
+}
+
+/* Paper grain: fixed, non-interactive, never on a scrolling container */
+.grain {
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Crop marks on the print sheet */
+.crop {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--ink-soft);
+  pointer-events: none;
+}
+
+.crop-tl {
+  top: 12px;
+  left: 12px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+.crop-tr {
+  top: 12px;
+  right: 12px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+}
+
+.crop-bl {
+  bottom: 12px;
+  left: 12px;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+}
+
+.crop-br {
+  bottom: 12px;
+  right: 12px;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+}
+
+/* Themed scrollbar */
+html {
+  scrollbar-color: var(--coral) var(--ground);
+}
+
+/* sileo's toast geometry is a fixed 350px; scale it down on very narrow phones */
+@media (max-width: 359px) {
+  [data-sileo-viewport][data-position] {
+    width: 350px;
+    max-width: none;
+    padding-inline: 0;
+    transform: translateX(-50%) scale(0.8) !important;
+    transform-origin: top center;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

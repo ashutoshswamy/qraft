@@ -1,17 +1,10 @@
 export default function Background() {
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-paper">
-      <div className="absolute inset-0 module-grid opacity-40" />
-      {/* Oversized finder mark, cropped off-canvas, top right */}
-      <div
-        className="finder-mark absolute -top-24 -right-24 w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] text-ink opacity-[0.04]"
-        aria-hidden
-      />
-      {/* Oversized finder mark, cropped off-canvas, bottom left */}
-      <div
-        className="finder-mark absolute -bottom-28 -left-28 w-[220px] h-[220px] sm:w-[300px] sm:h-[300px] text-ink opacity-[0.04]"
-        aria-hidden
-      />
+    <div className="fixed inset-0 -z-10 overflow-hidden bg-ground" aria-hidden>
+      {/* Halftone ink fields, the second spot color of the print */}
+      <div className="halftone halftone-coral absolute -right-32 -top-32 h-[460px] w-[460px] sm:h-[640px] sm:w-[640px]" />
+      <div className="halftone halftone-light absolute -bottom-32 -left-24 h-[360px] w-[360px] sm:h-[480px] sm:w-[480px]" />
+      <div className="grain absolute inset-0" />
     </div>
   );
 }
